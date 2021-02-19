@@ -11,21 +11,22 @@ import {
   // Marker,
   // Annotation,
 } from "react-simple-maps";
-import { useEffect } from "react";
-
-let data = [];
-
-const projection = geoAlbersUsa()
-  .scale(800)
-  .translate([800 / 2, 450 / 2]);
+import { useEffect, useState } from "react";
 
 function App() {
+  const [data, setData] = useState([]);
+
+  const projection = geoAlbersUsa()
+    .scale(800)
+    .translate([800 / 2, 450 / 2]);
+
   useEffect(() => {
     const elem = document.getElementById("heatmap");
     if (elem) {
       let canvas = elem.getContext("2d");
-      latLong.map((x) => data.push(projection([x[0], x[1]])));
-
+      latLong.map((x) => {
+        setData((data) => [...data, projection([x[0], x[1]])]);
+      });
       simpleheat("heatmap").radius(5, 5).max(100).data(data).draw();
     }
   }, [document.getElementById("heatmap")]);
